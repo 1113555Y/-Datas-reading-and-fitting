@@ -3,6 +3,23 @@
 #include "LeastSquare.h"
 
 
+void LeastSquare::SphericalToCartesian(vector<double> Azimuth, vector<double> Elevation, vector<double> Range)
+{
+	x.clear();
+	y.clear();
+	z.clear();
+	f_x.clear();
+	w.clear();
+	for (int i = 0; i < Range.size(); i++)
+	{	
+		x.push_back(Range[i]*cos(Elevation[i])*cos(Azimuth[i]));
+		y.push_back(Range[i] * cos(Elevation[i])*sin(-Azimuth[i]));
+		z.push_back(Range[i] * sin(Elevation[i]));
+		w.push_back(1);
+	}
+
+}
+
 double LeastSquare::sigma(vector<double> Array, int size)
 {
 	double val=0;
@@ -15,11 +32,20 @@ void LeastSquare::get_data(string OriginalDatasPath)
 {
 
 	MyReadDatas.readtxt(OriginalDatasPath);
-	
-	x = { 0,1,2,3,4,5,6,7,8,9 };
+	SphericalToCartesian(MyReadDatas.MyOriginalDatas.Azimuth, MyReadDatas.MyOriginalDatas.Elevation, MyReadDatas.MyOriginalDatas.Range);
+	//f_x = MyReadDatas.MyOriginalDatas.t;
+
+	cout << "x\t" << "y\t" << "z\t" << "t" << endl;
+	for (int i = 0; i < MyReadDatas.MyOriginalDatas.t.size();i++)
+	{
+		cout << x[i] << "\t" << y[i] << "\t" << z[i] << "\t" << MyReadDatas.MyOriginalDatas.t[i] << endl;
+	}
+	cout << "坐标转换完成" << endl;
+
+	/*x = { 0,1,2,3,4,5,6,7,8,9 };
 	f_x = { 1,3,7,13,21,31,43,57,73,91 };
 	w = { 1,1,1,1,1,1,1,1,1,1 };
-	/*x = { 1,2,3,4,5};
+	x = { 1,2,3,4,5};
 	f_x = {4,4.5,6,8,8.5 };
 	w = { 2,1,3,1,1 };*/
 }
@@ -30,7 +56,7 @@ void LeastSquare::Gauss()
 	double temp[15], d;
 
 
-	cout << "方程组的增广矩阵为:\n";
+	/*cout << "方程组的增广矩阵为:\n";
 
 	for (int i = 0; i < wx.size(); i++)
 	{
@@ -39,7 +65,7 @@ void LeastSquare::Gauss()
 			cout << wx[i][j] << "\t";
 		}
 		cout << endl;
-	}
+	}*/
 
 	int m, n, i, j, k;
 	m = wx.size();
@@ -71,7 +97,7 @@ void LeastSquare::Gauss()
 				wx[hang][i] = temp[i];
 			}
 		}
-		cout << "选列主元:\n";
+		/*cout << "选列主元:\n";
 		for (i = 0; i < m; i++)
 		{
 			for (j = 0; j < n + 1; j++)
@@ -79,7 +105,7 @@ void LeastSquare::Gauss()
 				cout << wx[i][j] << " ";
 			}
 			cout << "\n";
-		}
+		}*/
 		for (i = k + 1; i < m; i++) //消元
 		{
 			double d = wx[i][k] / wx[k][k];
@@ -88,7 +114,7 @@ void LeastSquare::Gauss()
 				wx[i][j] = wx[i][j] - d * wx[k][j];
 			}
 		}
-		cout << "消元:\n";
+		/*cout << "消元:\n";
 		for (i = 0; i < m; i++)
 		{
 			for (j = 0; j < n + 1; j++)
@@ -96,7 +122,7 @@ void LeastSquare::Gauss()
 				cout << wx[i][j] << " ";
 			}
 			cout << "\n";
-		}
+		}*/
 	}
 	memset(temp, 0, 15 * sizeof(float)); //将temp清0，准备存放解向量
 	for (i = m - 1; i >= 0; i--) //求解向量
@@ -108,12 +134,12 @@ void LeastSquare::Gauss()
 		}
 		temp[i] = (wx[i][n] - d) / wx[i][i];
 	}
-	cout << "此方程组的解向量转置为：("; //输出解向量
-	for (i = 0; i < m; i++)
-	{
-		cout << " "   << temp[i];//5位小数
-	}
-	cout << " )" << endl;
+	//cout << "此方程组的解向量转置为：("; //输出解向量
+	//for (i = 0; i < m; i++)
+	//{
+	//	cout << " "   << temp[i];//5位小数
+	//}
+	//cout << " )" << endl;
 
 	cout << "拟合的方程为：y=" ;
 	for (int i = 0; i < wx.size(); i++)
@@ -195,7 +221,8 @@ LeastSquare::~LeastSquare()
 void LeastSquare::fitting(string inputXmlPath , int N )
 {
 	get_data(inputXmlPath);
-
+	f_x = y;
+	N = 1;
 	wx.resize(N + 1);
 
 	for (int i = 0; i <=  N; i++)
@@ -210,9 +237,6 @@ void LeastSquare::fitting(string inputXmlPath , int N )
 			wx[i].push_back(sigma(wx_n, wx_n.size()));
 		}
 	}
-
-	
-
 	for (int i = 0; i <= N; i++)
 	{
 		wxf_n.clear();
@@ -238,10 +262,75 @@ void LeastSquare::fitting(string inputXmlPath , int N )
 	}*/
 
 	Gauss();
+	for (int i = 0; i < x.size(); i++)
+	{
+		X.push_back(sqrt((x[i]-x[0]) * (x[i]-x[0]) + (y[i]-y[0]) * (y[i]-y[0])));
+		Y.push_back(z[i]);
+		T.push_back(MyReadDatas.MyOriginalDatas.t[i]);
+	}
+}
 
+void LeastSquare::fitting(SOriginalDatas inputOriginalDatas)
+{
+	//SphericalToCartesian(inputOriginalDatas.Azimuth, inputOriginalDatas.Elevation, inputOriginalDatas.Range);
+	/*cout << "x\t" << "y\t" << "z\t" << "t" << endl;
+	for (int i = 0; i < inputOriginalDatas.t.size(); i++)
+	{
+		cout << x[i] << "\t" << y[i] << "\t" << z[i] << "\t" << inputOriginalDatas.t[i] << endl;
+	}*/
+	cout << "坐标转换完成" << endl;
+	f_x = y;
+	int N = 1;
+	wx.resize(N + 1);
 
+	for (int i = 0; i <= N; i++)
+	{
+		for (int j = 0; j <= N; j++)
+		{
+			wx_n.clear();
+			for (int k = 0; k < x.size(); k++)
+			{
+				wx_n.push_back(w[k] * pow(x[k], i + j));
+			}
+			wx[i].push_back(sigma(wx_n, wx_n.size()));
+		}
+	}
+	for (int i = 0; i <= N; i++)
+	{
+		wxf_n.clear();
+		for (int k = 0; k < x.size(); k++)
+		{
+			wxf_n.push_back(w[k] * pow(x[k], i)*f_x[k]);
+		}
+		//Vector_wxf(i)= sigma(wxf_n,wxf_n.size());
+		wx[i].push_back(sigma(wxf_n, wxf_n.size()));
+	}
+	for (int i = 0; i <= N; i++)
+	{
+		for (int j = 0; j <= N + 1; j++)
+		{
+			cout << wx[i][j] << "\t";
+		}
+		cout << endl;
+	}
 
+	Gauss();
+	for (int i = 0; i < x.size(); i++)
+	{
+		X.push_back(sqrt((x[i] - x[0]) * (x[i] - x[0]) + (y[i] - y[0]) * (y[i] - y[0])));
+		Y.push_back(z[i]);
+		T.push_back(inputOriginalDatas.t[i]);
+	}
+}
 
+void LeastSquare::CartesianToSpherical(double X, double Y, double Z)
+{
+
+}
+
+SCoordinate LeastSquare::XYtoxyz(SCoordinate point)
+{
+	return SCoordinate();
 }
 
 	

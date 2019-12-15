@@ -27,6 +27,18 @@
     <ClInclude Include="LeastSquare.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="OBCal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="obrwxml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="读取数据及拟合.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="adjust.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -41,5 +53,17 @@
     <ClCompile Include="LeastSquare.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="OBCal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="obrwxml.cpp">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="adjust.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

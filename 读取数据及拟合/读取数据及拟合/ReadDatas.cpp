@@ -121,7 +121,7 @@ void ReadDatas::readtxt(string OriginalDatasPath, string RadarCoordinatePath)
 	ifstream fin(OriginalDatasPath);
 
 	fin.getline(str, 500);
-	cout << str<<endl;
+	//cout << str<<endl;
 
 
 
@@ -136,7 +136,7 @@ void ReadDatas::readtxt(string OriginalDatasPath, string RadarCoordinatePath)
 		MyOriginalDatas.Azimuth.push_back(result[1]);
 		MyOriginalDatas.Elevation.push_back(result[2]);
 		MyOriginalDatas.Range.push_back(result[3]);
-		cout << result[0] << "\t" << result[1] << "\t" << result[2] << "\t" << result[3] << "\n";
+		//cout << result[0] << "\t" << result[1] << "\t" << result[2] << "\t" << result[3] << "\n";
 	}
 	fin.close();
 
