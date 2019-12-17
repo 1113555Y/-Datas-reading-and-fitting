@@ -15,7 +15,18 @@ struct MyDataNode
 
 
 
+typedef struct
+{
+	double Azimuth, Elevation, Range;//方位角(rad)//仰角(rad)	//距离(km)
 
+	double Longitude, Latitude, Height;//经度(°)//纬度(°);//高(m)
+
+	double X, Y;//2D弹道地面坐标
+
+	double x, y, z;//雷达切平面直角坐标
+
+	double t;//时间
+}SCoordinate;	//坐标
 
 typedef struct
 {
@@ -27,11 +38,15 @@ typedef struct
 
 typedef struct
 {
-	vector<double> Param;
+	//vector<double> Param;
+	double Param[4];
 	double Longitude;//经度(°)
 	double Latitude;//纬度(°)
 	double Height;//高(m)
 	double  ReferenceHeight;//基准面高度(m)
+
+	double startH;//炮位高度
+	double endH;//落点高度
 }SRadarCoordinate;		//站坐标
 
 typedef struct {
@@ -54,6 +69,7 @@ typedef struct {
 	double rho0n;//ρ0n=1.205kg/m³
 
 	double h;//仿真步长h=0.01
+	double endH;//终点高度=0
 }SConsParam;	//输入常数
 
 typedef struct
@@ -83,14 +99,4 @@ typedef struct
 	vector<double> p;
 }SOutParam;		//输出参数
 
-typedef struct
-{	
-	double Azimuth,Elevation,Range;//方位角(rad)//仰角(rad)	//距离(km)
 
-	double Longitude,Latitude,Height;//经度(°)//纬度(°);//高(m)
-
-	double X, Y;//2D弹道地面坐标
-	
-	double x, y, z;//雷达切平面直角坐标
-
-}SCoordinate;	//坐标

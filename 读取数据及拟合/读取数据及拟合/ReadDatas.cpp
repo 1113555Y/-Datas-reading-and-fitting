@@ -150,7 +150,7 @@ void ReadDatas::readtxt(string OriginalDatasPath, string RadarCoordinatePath)
 		result = getdatas(str);
 		if (result.size() == 0)
 			break;
-		MyRadarCoordinate.Param.push_back(result[0]);
+		MyRadarCoordinate.Param[i]=(result[0]);
 		
 
 		//MyRadarCoordinate.Longitude = result[1];

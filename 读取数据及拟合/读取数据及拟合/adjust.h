@@ -16,14 +16,15 @@ class adjust
 
 	
 
-	void set(vector<double>X, vector<double>Y, vector<double>T);
-	
+	void set(vector<SCoordinate> MyCoordinate, SRadarCoordinate Radar);
+	SCoordinate XYtoxyz(SCoordinate point);
+	SCoordinate xyzToRAE(SCoordinate point);
 public:
 	adjust();
 	~adjust();
 	SCoordinate endPoint;//Âäµã
 	SCoordinate startPoint;//ÅÚÎ»
 
-	void Adjust(vector<double>X, vector<double>Y, vector<double>T);
+	void Adjust(vector<SCoordinate> MyCoordinate,SRadarCoordinate Radar);
 };
 

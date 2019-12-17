@@ -14,7 +14,7 @@ OBCal::~OBCal()
 void OBCal::Simu(string inputXmlPath, string outputXmlPath)
 {
 	InputParam(inputXmlPath);
-	OBSimu();
+	OBSimu(0);
 	OutputParam(outputXmlPath);
 }
 
@@ -22,7 +22,7 @@ void OBCal::Simu(SInitParam InitParam, SConsParam ConsParam, string  outputPath 
 {
 	Constant(ConsParam);
 	Inital(InitParam);
-	OBSimu();
+	OBSimu(ConsParam.endH);
 	OutputParam(outputPath);
 }
 
@@ -69,6 +69,7 @@ void OBCal::Constant(SConsParam Params)
 	ConsParam.R1 = 287;
 	ConsParam.h = Params.h;
 	ConsParam.c = Params.c;
+	ConsParam.endH = Params.endH;
 
 	//炮兵标准气象
 	ConsParam.T0n = 288.15;		//气温T0n = 288.15K
@@ -128,7 +129,7 @@ void OBCal::OutputClear()
 	Prwxml.MyOutParam.p.clear();
 }
 
-void OBCal::OBSimu()
+void OBCal::OBSimu(double endH)
 {
 	int i = 0;//步数
 	double c[6] = { 0, 0.5 * h, 0.5 * h, h, h, 0.5 * h };
@@ -154,7 +155,7 @@ void OBCal::OBSimu()
 	Prwxml.MyOutParam.vz.push_back(u[2]);
 	Prwxml.MyOutParam.v.push_back(sqrt(u[0]* u[0]+ u[1]* u[1]));
 	Prwxml.MyOutParam.p.push_back(u[7]);
-	while (u[4] >= 0)
+	while (u[4] >= endH)
 	{
 		INPT(i);		
 		i = i + 1;

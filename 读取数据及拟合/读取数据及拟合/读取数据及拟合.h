@@ -1,7 +1,5 @@
 // dlltest.h   头文件，使用动态链接库时需要包含头文件
-#include "pch.h"
-#include"LeastSquare.h"
-#include"OBCal.h"
+#include"mydatatype.h"
 
 #pragma once
 #ifdef __DLLEXPORT
@@ -15,8 +13,8 @@
 extern "C"
 {
 #endif
-
-	__DLL_EXP void run(SOriginalDatas inputOriginalDatas, SRadarCoordinate inputRadarCoordinate);
+	__DLL_EXP void run(SRadarCoordinate RadarCoordinate);
+	//__DLL_EXP void run(SOriginalDatas OriginalDatas, SRadarCoordinate RadarCoordinate);
 #if defined(__cplusplus)||defined(c_plusplus)
 }
 #endif

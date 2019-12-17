@@ -21,7 +21,7 @@ private:
 	void Inital(SInitParam Params);
 	void Output();
 	void OutputClear();
-	void OBSimu();
+	void OBSimu(double endH);
 	void InputParam(string inputXmlPath);
 	void OutputParam(string outputXmlPath);
 	void RK(int n, double h, double u[], double f[]);

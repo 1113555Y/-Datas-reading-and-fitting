@@ -2,7 +2,7 @@
 #include "adjust.h"
 
 
-void adjust::set(vector<double> X, vector<double> Y, vector<double> T)
+void adjust::set(vector<SCoordinate> MyCoordinate, SRadarCoordinate Radar)
 {
 	MyConsParam.c = 1;
 	MyConsParam.G = 6.328E-3;
@@ -15,18 +15,23 @@ void adjust::set(vector<double> X, vector<double> Y, vector<double> T)
 	MyConsParam.tau0n = 289.1;
 	MyConsParam.h = 0.01;
 
+	MyConsParam.endH = Radar.endH;
+
 	MyInitParam.p = MyConsParam.p0n;//不太对，以后再改
-	MyInitParam.t = T[0];
-	MyInitParam.vx = (X[X.size() - 1] - X[0]) / (T[T.size() - 1] - T[0]);
-	MyInitParam.vy = (Y[Y.size() - 1] - Y[0]) / (T[T.size() - 1] - T[0]);
-	MyInitParam.x = X[0];
-	MyInitParam.y = Y[0];
+	MyInitParam.t = MyCoordinate[0].t;
+
+	MyInitParam.vx = (MyCoordinate[MyCoordinate.size() - 1].X - MyCoordinate[0].X) / (MyCoordinate[MyCoordinate.size() - 1].t - MyCoordinate[0].t);
+	MyInitParam.vy = (MyCoordinate[MyCoordinate.size() - 1].Y - MyCoordinate[0].Y) / (MyCoordinate[MyCoordinate.size() - 1].t - MyCoordinate[0].t);
+	MyInitParam.x = MyCoordinate[0].X;
+	MyInitParam.y = MyCoordinate[0].Y;
 
 	deltaVx = 0;
 	deltaVy = 0;
 	deltaX = 0;
 	deltaY = 0;
 }
+
+
 
 adjust::adjust()
 {
@@ -37,9 +42,9 @@ adjust::~adjust()
 {
 }
 
-void adjust::Adjust(vector<double> X, vector<double> Y, vector<double> T)
+void adjust::Adjust(vector<SCoordinate> MyCoordinate, SRadarCoordinate Radar)
 {
-	set(X,Y,T);
+	set(MyCoordinate, Radar);
 	double c1=0, c2=5;
 	while (true)
 	{
@@ -67,49 +72,54 @@ void adjust::Adjust(vector<double> X, vector<double> Y, vector<double> T)
 
 			for (int i = 0; i < MyOBCal.TT.size(); i++)
 			{
-				if (MyOBCal.TT[i] >= T[T.size() - 1])
+				if (MyOBCal.TT[i] >= MyCoordinate[MyCoordinate.size() - 1].t)
 				{
-					deltaVx= (X[X.size() - 1] - X[0]) / (T[T.size() - 1] - T[0])- (MyOBCal.XX[i] - MyOBCal.XX[0]) / (MyOBCal.TT[i] - MyOBCal.TT[0]);
-					deltaVy = (Y[Y.size() - 1] - Y[0]) / (T[T.size() - 1] - T[0]) - (MyOBCal.YY[i] - MyOBCal.YY[0]) / (MyOBCal.TT[i] - MyOBCal.TT[0]);
+					deltaVx= (MyCoordinate[MyCoordinate.size() - 1].X - MyCoordinate[0].X) / (MyCoordinate[MyCoordinate.size() - 1].t- MyCoordinate[0].t)- (MyOBCal.XX[i] - MyOBCal.XX[0]) / (MyOBCal.TT[i] - MyOBCal.TT[0]);
+					deltaVy = (MyCoordinate[MyCoordinate.size() - 1].Y - MyCoordinate[0].Y) / (MyCoordinate[MyCoordinate.size() - 1].t - MyCoordinate[0].t) - (MyOBCal.YY[i] - MyOBCal.YY[0]) / (MyOBCal.TT[i] - MyOBCal.TT[0]);
 					break;
 				}
 			}
-			if (fabs(deltaVx*T[T.size() - 1]) <= 1&&fabs(deltaVy*T[T.size() - 1] )<= 1)
+			if (fabs(deltaVx*MyCoordinate[MyCoordinate.size() - 1].t) <= 1&&fabs(deltaVy*MyCoordinate[MyCoordinate.size() - 1].t)<= 1)
 				break;
 		}
 
 		//计算每个点的误差
-		for (int i = 0; i <T.size(); i++)
+		for (int i = 0; i < MyCoordinate.size(); i++)
 		{
 			for (int j = 0;j < MyOBCal.TT.size(); j++)
 			{
-				if (MyOBCal.TT[j] >= T[i])
+				if (MyOBCal.TT[j] >= MyCoordinate[i].t)
 				{
-					if (MyOBCal.XX[j] - X[i] >= deltaX)
-						deltaX = MyOBCal.XX[j] - X[i];
-					if (MyOBCal.YY[j] - Y[i] >= deltaY)
-						deltaY = MyOBCal.YY[j] - Y[i];
-					cout << MyOBCal.XX[j] - X[i]<<"\t"<< MyOBCal.YY[j] - Y[i]<<endl;
+					if (MyOBCal.XX[j] - MyCoordinate[i].X >= deltaX)
+						deltaX = MyOBCal.XX[j] - MyCoordinate[i].X;
+					if (MyOBCal.YY[j] - MyCoordinate[i].Y >= deltaY)
+						deltaY = MyOBCal.YY[j] - MyCoordinate[i].Y;
+					cout << MyOBCal.XX[j] - MyCoordinate[i].X<<"\t"<< MyOBCal.YY[j] - MyCoordinate[i].Y<<endl;
 					break;
 				}
 			}
 		}
 
 		if (fabs(deltaX) < 30 && fabs(deltaY) < 35)
+		{
+			endPoint.X = MyOBCal.XX[MyOBCal.XX.size() - 1];
+			endPoint.Y = MyOBCal.YY[MyOBCal.YY.size() - 1];
 			cout << "vx=" << MyInitParam.vx << ";vy=" << MyInitParam.vy << endl;
 			break;		
+		}
+			
+			
 	}
 	cout << "落点：\n" << MyOBCal.XX[MyOBCal.XX.size() - 1] << "\t" << MyOBCal.YY[MyOBCal.YY.size() - 1] << endl;
 	//计算炮位
-	/*MyInitParam.vx = -MyInitParam.vx;
-	MyInitParam.vy = -MyInitParam.vy;
-	MyConsParam.c = -MyConsParam.c;*/
 	MyConsParam.h = -MyConsParam.h;
+	MyConsParam.endH = Radar.startH;
 	MyOBCal.Simu(MyInitParam, MyConsParam,"计算炮位.txt");
 	cout << "炮位：\n" << MyOBCal.XX[MyOBCal.XX.size() - 1] << "\t" << MyOBCal.YY[MyOBCal.YY.size() - 1] << endl;
 	startPoint.X = MyOBCal.XX[MyOBCal.XX.size() - 1];
 	startPoint.Y = MyOBCal.YY[MyOBCal.YY.size() - 1];
 	
+
 }
 
 	

@@ -1,10 +1,34 @@
 #include "pch.h"
-
 #include "LeastSquare.h"
 
 
+void LeastSquare::setCoordinate(SOriginalDatas OriginalDatas)
+{
+	SCoordinate Coordinate;
+	vector<double>temp_x, temp_y;
+	
+	for (int i = 0; i < OriginalDatas.t.size(); i++)
+	{
+		Coordinate.Azimuth = OriginalDatas.Azimuth[i];
+		Coordinate.Elevation = OriginalDatas.Elevation[i];
+		Coordinate.Range = OriginalDatas.Range[i];
+		Coordinate.t = OriginalDatas.t[i];
+		MyCoordinate.push_back(Coordinate);
+		MyCoordinate[i] = SphericalToCartesian(MyCoordinate[i]);
+		temp_x.push_back(MyCoordinate[i].x);
+		temp_y.push_back(MyCoordinate[i].y);
+	}
+	temp_y = fitting(temp_x, temp_y, 1);
+	for (int i = 0; i < temp_x.size(); i++)
+	{
+		MyCoordinate[i].y = temp_y[i];
+		MyCoordinate[i] = xyzToXY(MyCoordinate[i]);
+	}
+}
+
 void LeastSquare::SphericalToCartesian(vector<double> Azimuth, vector<double> Elevation, vector<double> Range)
 {
+
 	x.clear();
 	y.clear();
 	z.clear();
@@ -18,6 +42,23 @@ void LeastSquare::SphericalToCartesian(vector<double> Azimuth, vector<double> El
 		w.push_back(1);
 	}
 
+}
+
+SCoordinate LeastSquare::SphericalToCartesian(SCoordinate point)
+{
+	point.x = point.Range*cos(point.Elevation)*cos(point.Azimuth);
+	point.y = point.Range*cos(point.Elevation)*sin(-point.Azimuth);
+	point.z = point.Range*sin(point.Elevation);
+
+	return point;
+}
+
+SCoordinate LeastSquare::xyzToXY(SCoordinate point)
+{
+	point.X = sqrt((point.x-MyCoordinate[0].x)*(point.x - MyCoordinate[0].x) + (point.y - MyCoordinate[0].y) +( point.y - MyCoordinate[0].y));
+	point.Y = point.z;
+
+	return point;
 }
 
 double LeastSquare::sigma(vector<double> Array, int size)
@@ -50,22 +91,10 @@ void LeastSquare::get_data(string OriginalDatasPath)
 	w = { 2,1,3,1,1 };*/
 }
 
-void LeastSquare::Gauss()
+vector<double>LeastSquare::Gauss()
 {
-
+	vector<double>val;
 	double temp[15], d;
-
-
-	/*cout << "方程组的增广矩阵为:\n";
-
-	for (int i = 0; i < wx.size(); i++)
-	{
-		for (int j = 0; j < wx[i].size(); j++)
-		{
-			cout << wx[i][j] << "\t";
-		}
-		cout << endl;
-	}*/
 
 	int m, n, i, j, k;
 	m = wx.size();
@@ -86,7 +115,7 @@ void LeastSquare::Gauss()
 		if (wx[hang][k] == 0)
 		{
 			cout << "无法计算" << endl;
-			return;
+			
 		}
 		if (k != hang) //换行
 		{
@@ -134,79 +163,16 @@ void LeastSquare::Gauss()
 		}
 		temp[i] = (wx[i][n] - d) / wx[i][i];
 	}
-	//cout << "此方程组的解向量转置为：("; //输出解向量
-	//for (i = 0; i < m; i++)
-	//{
-	//	cout << " "   << temp[i];//5位小数
-	//}
-	//cout << " )" << endl;
 
 	cout << "拟合的方程为：y=" ;
 	for (int i = 0; i < wx.size(); i++)
 	{
 		cout << "+" << temp[i] << "*x^" << i;
+		val.push_back(temp[i]);
 	}
 	cout << endl;
 
-
-
-
-
-	//for (int j = 0; j < wx[j].size() - 1; j++) //找列主元最大值
-	//{
-	//	double max = 0;
-	//	int hang = 0, num = 0;
-	//	for (int i = j; i < wx[j].size(); i++)
-	//	{
-	//		if (fabs(wx[i][j]) > max)
-	//		{
-	//			max = fabs(wx[i][j]);
-	//			hang = i;
-	//		}
-	//	}
-	//	if (wx[hang][j] == 0)
-	//	{
-	//		cout << "无法计算" << endl;
-	//		return;
-	//	}
-	//	if (j != hang) //换行
-	//	{
-	//		for (int i = 0; i < wx.size(); i++)
-	//		{
-	//			double temp = wx[i][j];
-	//			wx[i][j] = wx[hang][j];
-	//			wx[hang][j] = temp;
-	//		}
-	//	}
-	//	cout << "选列主元:\n";
-	//	for (int i = 0; i < wx.size(); i++)
-	//	{
-	//		for (int j = 0; j < wx[i].size(); j++)
-	//		{
-	//			cout << wx[i][j] << " ";
-	//		}
-	//		cout << "\n";
-	//	}
-
-	//	//for (i = k + 1; i < m; i++) //消元
-	//	//{
-	//	//	d = a[i][k] / a[k][k];
-	//	//	for (j = 0; j < n + 1; j++)
-	//	//	{
-	//	//		a[i][j] = a[i][j] - d * a[k][j];
-	//	//	}
-	//	//}
-	//	//cout << "消元:\n";
-	//	//for (i = 0; i < m; i++)
-	//	//{
-	//	//	for (j = 0; j < n + 1; j++)
-	//	//	{
-	//	//		cout << a[i][j] << " ";
-	//	//	}
-	//	//	cout << "\n";
-	//	//}
-	//}
-
+	return val;
 }
 
 LeastSquare::LeastSquare()
@@ -217,7 +183,53 @@ LeastSquare::LeastSquare()
 LeastSquare::~LeastSquare()
 {
 }
+vector<double> LeastSquare::fitting(vector<double> x, vector<double> y, int N)
+{
+		f_x = y;
+		N = 1;
+		wx.resize(N + 1);
 
+		for (int i = 0; i <= N; i++)
+		{
+			for (int j = 0; j <= N; j++)
+			{
+				wx_n.clear();
+				for (int k = 0; k < x.size(); k++)
+				{
+					wx_n.push_back( pow(x[k], i + j));
+				}
+				wx[i].push_back(sigma(wx_n, wx_n.size()));
+			}
+		}
+		for (int i = 0; i <= N; i++)
+		{
+			wxf_n.clear();
+			for (int k = 0; k < x.size(); k++)
+			{
+				wxf_n.push_back(pow(x[k], i)*f_x[k]);
+			}
+			wx[i].push_back(sigma(wxf_n, wxf_n.size()));
+		}
+		for (int i = 0; i <= N; i++)
+		{
+			/*for (int j = 0; j <= N + 1; j++)
+			{
+				cout << wx[i][j] << "\t";
+			}
+			cout << endl;*/
+		}
+		vector<double>a=Gauss();
+
+		for (int i = 0; i < x.size(); i++)
+		{
+			y[i] = 0;
+			for (int j = 0; j < N+1; j++)
+			{
+			y[i] = y[i] +a[j]* pow(x[i],j);
+			}
+		}
+		return y;
+}
 void LeastSquare::fitting(string inputXmlPath , int N )
 {
 	get_data(inputXmlPath);
@@ -272,12 +284,6 @@ void LeastSquare::fitting(string inputXmlPath , int N )
 
 void LeastSquare::fitting(SOriginalDatas inputOriginalDatas)
 {
-	//SphericalToCartesian(inputOriginalDatas.Azimuth, inputOriginalDatas.Elevation, inputOriginalDatas.Range);
-	/*cout << "x\t" << "y\t" << "z\t" << "t" << endl;
-	for (int i = 0; i < inputOriginalDatas.t.size(); i++)
-	{
-		cout << x[i] << "\t" << y[i] << "\t" << z[i] << "\t" << inputOriginalDatas.t[i] << endl;
-	}*/
 	cout << "坐标转换完成" << endl;
 	f_x = y;
 	int N = 1;
@@ -323,14 +329,81 @@ void LeastSquare::fitting(SOriginalDatas inputOriginalDatas)
 	}
 }
 
+
+
 void LeastSquare::CartesianToSpherical(double X, double Y, double Z)
 {
 
 }
 
+SCoordinate LeastSquare::CartesianToSpherical(SCoordinate point)
+{
+	SCoordinate Coordinate;
+
+
+	return SCoordinate();
+}
+
 SCoordinate LeastSquare::XYtoxyz(SCoordinate point)
 {
-	return SCoordinate();
+
+	point.x = MyCoordinate[0].x + point.X / MyCoordinate[1].X * (MyCoordinate[1].x - MyCoordinate[0].x);
+	point.y = MyCoordinate[0].y + point.X / MyCoordinate[1].X * (MyCoordinate[1].y - MyCoordinate[0].y);
+
+	/*
+	point.x = MyCoordinate[0].x + point.X*cos(atan((MyCoordinate[1].y- MyCoordinate[0].y)/(MyCoordinate[1].x - MyCoordinate[0].x)));
+	point.y = MyCoordinate[0].y + point.X*sin(atan((MyCoordinate[1].y - MyCoordinate[0].y) / (MyCoordinate[1].x - MyCoordinate[0].x)));
+	*/
+	point.z = point.Y;
+	return point;
+}
+
+SCoordinate LeastSquare::xyzToRAE(SCoordinate point)
+{
+	point.Range = sqrt(point.x*point.x + point.y + point.y + point.z + point.z);
+	if (sqrt(point.x*point.x + point.y + point.y)==0)
+	{
+		point.Elevation = 0;
+	}
+	else
+	{
+		point.Elevation = atan(point.z / sqrt(point.x*point.x + point.y + point.y));
+	}
+
+	if (point.x > 0)
+	{
+		if (point.y >= 0)
+		{
+			point.Azimuth =2 * PI -atan(point.y / point.x);
+		}
+		else
+		{
+			cout<< -atan(point.y / point.x);
+			point.Azimuth =  - atan(point.y / point.x);
+		}
+	}
+	else if (point.x == 0)
+	{
+		if (point.y > 0)
+		{
+			point.Azimuth = PI*3/2;
+		}
+		else if (point.y < 0)
+		{
+			point.Azimuth = PI/2;
+		}
+		else if (point.y == 0)
+		{
+			point.Azimuth = 0;
+		}
+	}
+	else if(point.x<0)
+	{
+		point.Azimuth = PI - atan(point.y / point.x);
+	}
+	
+
+	return point;
 }
 
 	

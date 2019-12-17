@@ -1,3 +1,30 @@
-﻿  读取数据及拟合.cpp
-f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\读取数据及拟合.cpp(22): warning C4018: “<”: 有符号/无符号不匹配
+﻿  LeastSquare.cpp
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(11): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(23): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(38): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(81): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(169): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(198): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(208): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(224): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(246): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(256): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(278): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(298): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(308): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(325): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\leastsquare.cpp(342): warning C4101: “Coordinate”: 未引用的局部变量
+  OBCal.cpp
+  ReadDatas.cpp
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\readdatas.cpp(92): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\readdatas.cpp(97): warning C4018: “<”: 有符号/无符号不匹配
+  adjust.cpp
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\adjust.cpp(73): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\adjust.cpp(87): warning C4018: “<”: 有符号/无符号不匹配
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\adjust.cpp(89): warning C4018: “<”: 有符号/无符号不匹配
+  obrwxml.cpp
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\obrwxml.cpp(46): warning C4018: “<”: 有符号/无符号不匹配
+  读取数据及拟合.cpp
+f:\任务\质点弹道\vs21017\-datas-reading-and-fitting\读取数据及拟合\读取数据及拟合\读取数据及拟合.cpp(24): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
   读取数据及拟合.vcxproj -> F:\任务\质点弹道\vs21017\-Datas-reading-and-fitting\读取数据及拟合\Debug\读取数据及拟合.exe
